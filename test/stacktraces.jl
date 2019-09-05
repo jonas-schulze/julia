@@ -168,3 +168,20 @@ end
 @test bt[2].line == 42
 @test bt[2].file === :foo
 end
+
+# Test hidden frames
+function bt_not_hidden_frame()
+    backtrace()
+end
+Base.@hide_in_stacktrace function bt_hidden_frame()
+    bt_not_hidden_frame()
+end
+
+let bt = bt_hidden_frame()
+    st = stacktrace(bt, min_importance=-2)
+    hidden_frame = st[findfirst(s->s.func == :bt_hidden_frame, st)]
+    @test StackTraces.frame_importance(hidden_frame) == -1
+    not_hidden_frame = st[findfirst(s->s.func == :bt_not_hidden_frame, st)]
+    @test StackTraces.frame_importance(not_hidden_frame) >= 0
+end
+
