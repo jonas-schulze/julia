@@ -452,9 +452,6 @@ let a = Expr(:quote,Expr(:$,:x8d003))
     @test eval(eval(Meta.parse(repr(a)))) == 2
 end
 
-# issue #9865
-@test occursin(r"^Set\(\[.+….+\]\)$", replstr(Set(1:100)))
-
 # issue #11413
 @test string(:(*{1, 2})) == "*{1, 2}"
 @test string(:(*{1, x})) == "*{1, x}"
@@ -1275,7 +1272,7 @@ end
     @test replstr(view(A, [1], :)) == "1×1 view(::Array{Float64,2}, [1], :) with eltype Float64:\n 0.0"
 
     # issue #27680
-    @test replstr(Set([(1.0,1.0), (2.0,2.0), (3.0, 3.0)])) == (sizeof(Int) == 8 ?
+    @test showstr(Set([(1.0,1.0), (2.0,2.0), (3.0, 3.0)])) == (sizeof(Int) == 8 ?
               "Set([(3.0, 3.0), (2.0, 2.0), (1.0, 1.0)])" :
               "Set([(1.0, 1.0), (2.0, 2.0), (3.0, 3.0)])")
 
