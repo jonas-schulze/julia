@@ -602,6 +602,14 @@ JL_CALLABLE(jl_f__apply)
             jl_value_t *next = jl_apply_generic(jl_iterate_func, args, 1);
             while (next != jl_nothing) {
                 roots[stackalloc] = next;
+                if (!jl_is_tuple(next) || jl_nfields(next) < 2) {
+                    jl_value_t *elt[2] = {
+                        (jl_value_t*)jl_any_type,
+                        (jl_value_t*)jl_any_type};
+                    jl_type_error_rt("_apply", "iterate return value",
+                        (jl_value_t*)jl_apply_tuple_type_v(elt, 2),
+                        next);
+                }
                 jl_value_t *value = jl_fieldref(next, 0);
                 roots[stackalloc + 1] = value;
                 jl_value_t *state = jl_fieldref(next, 1);
