@@ -635,6 +635,8 @@ end
 function abstract_call(@nospecialize(f), fargs::Union{Nothing,Vector{Any}}, argtypes::Vector{Any}, vtypes::VarTable, sv::InferenceState, max_methods = sv.params.MAX_METHODS)
     if f === _apply
         return abstract_apply(argtypes[2], argtypes[3:end], vtypes, sv, max_methods)
+    elseif f === _apply_iterate
+        return abstract_apply(argtypes[3], argtypes[4:end], vtypes, sv, max_methods)
     end
 
     la = length(argtypes)
